@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "690558188660",
+    "firebase_url": "https://remote-hms-default-rtdb.firebaseio.com",
+    "project_id": "remote-hms",
+    "storage_bucket": "remote-hms.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690558188660:android:676819556ee9146819e521",
+        "android_client_info": {
+          "package_name": "com.example.remote_health"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690558188660-p82m53fcc6bhvi92hpasge7825r44h3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.remote_health",
+            "certificate_hash": "e0d12bad8329045d388d2e66584f2986c9515212"
+          }
+        },
+        {
+          "client_id": "690558188660-549fl3isenqf4a7vcgov81js8jsj1laf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrUHo4wizFPAqJv-Bt4XHVf_y1U9yqiOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690558188660-549fl3isenqf4a7vcgov81js8jsj1laf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

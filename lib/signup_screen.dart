@@ -1,60 +1,36 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:remote_health/defaults/round_gradient_button.dart';
 import 'package:remote_health/defaults/round_text_field.dart';
 import 'package:remote_health/home_page.dart';
-import 'package:remote_health/signup_screen.dart';
+import 'package:remote_health/login_screen.dart';
 import 'package:remote_health/utils/app_colors.dart';
 import 'dashboard.dart';
 
-class LoginScreen extends StatefulWidget {
-  final String title;
-  const LoginScreen({super.key, required this.title});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  CollectionReference _users = FirebaseFirestore.instance.collection("users");
 
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   bool isObscure = true;
+  bool _isCheck = false;
   final _formKey = GlobalKey<FormState>();
-
-  Future<User?> _signIn(
-      BuildContext context, String email, String password) async {
-    try {
-      UserCredential userCredential = await firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: password);
-
-      User? user = userCredential.user;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text("Login Successfully"))
-      );
-
-      Navigator.push(
-          context, MaterialPageRoute(
-          builder: (context) => Dashboard()
-      ));
-      return user;
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text("Login Failed, Please check your email and password")),
-      );
-      return null;
-    }
-  }
 
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: <String>['email']);
   GoogleSignInAccount? _currentUser;
-
 
   @override
   void initState() {
@@ -93,10 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleSignIn() async {
     try {
       await _googleSignIn.signIn();
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text("Login Successfully"))
-      );
     } catch (error) {
       print(error);
     }
@@ -107,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
     var media = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: AppColors.whiteColor,
-        appBar: AppBar(title: Text(widget.title)),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Container(
@@ -138,10 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: media.width * 0.03,
+                            height: media.width * 0.01,
                           ),
                           Text(
-                            "Welcome Back",
+                            "Create an Account",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: AppColors.blackColor,
@@ -153,7 +124,37 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.1,
+                      height: media.width * 0.02,
+                    ),
+                    RoundTextField(
+                      textEditingController: _firstNameController,
+                      hintText: "First Name",
+                      icon: "assets/Icons/profile_icon.png",
+                      textInputType: TextInputType.name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter your First Name";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(
+                      height: media.width * 0.02,
+                    ),
+                    RoundTextField(
+                      textEditingController: _lastNameController,
+                      hintText: "Last Name",
+                      icon: "assets/Icons/profile_icon.png",
+                      textInputType: TextInputType.name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter your Last Name";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(
+                      height: media.width * 0.02,
                     ),
                     RoundTextField(
                       textEditingController: _emailController,
@@ -168,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     SizedBox(
-                      height: media.width * 0.05,
+                      height: media.width * 0.02,
                     ),
                     RoundTextField(
                       textEditingController: _passController,
@@ -206,29 +207,69 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Forgot Password?",
+                    SizedBox(
+                      height: media.width * 0.02,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isCheck = !_isCheck;
+                              });
+                            },
+                            icon: Icon(
+                              _isCheck
+                                  ? Icons.check_box_outlined
+                                  : Icons.check_box_outline_blank,
+                              color: AppColors.grayColor,
+                            )),
+                        Expanded(
+                            child: Text(
+                          "By continuing you accept our Privacy Policy and\nterms of Use",
                           style: TextStyle(
-                            color: AppColors.secondaryColor1,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                            color: AppColors.grayColor,
+                            fontSize: 10,
                           ),
-                        ),
-                      ),
+                        )),
+                      ],
                     ),
                     SizedBox(
-                      height: media.width * 0.1,
+                      height: media.width * 0.05,
                     ),
                     RoundGradientButton(
-                      title: "Login",
-                      onPressed: () {
+                      title: "Create Account",
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          _signIn(context, _emailController.text,
-                              _passController.text);
+                          if (_isCheck) {
+                            try {
+                              UserCredential userCredential = await firebaseAuth
+                                  .createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passController.text,
+                              );
+                              String uid = userCredential.user!.uid;
+
+                              await _users.doc(uid).set({
+                                'email': _emailController.text,
+                                'firstName': _firstNameController.text,
+                                'lastName': _lastNameController.text,
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Account Created"))
+                              );
+                              Navigator.push(
+                                  context, MaterialPageRoute(
+                                  builder: (context) => LoginScreen(title: "Remote HMS")
+                              ));
+
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.toString()))
+                              );
+                            }
+                          }
                         }
                       },
                     ),
@@ -311,35 +352,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: media.width * 0.01,
+                      height: media.width * 0.05,
                     ),
-                    TextButton(onPressed: (){
-                      Navigator.push(
-                          context, MaterialPageRoute(
-                          builder: (context) => SignUpScreen()
-                      ));
-                    },
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: TextStyle(
-                                color: AppColors.blackColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              children: [
-                                TextSpan(text: "Don't have an account?  "),
-                                TextSpan(
-                                  text: "Register",
-                                  style: TextStyle(
-                                    color: AppColors.secondaryColor1,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  )
-                                )
-                              ],
-                            ),
-                        ),),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context, MaterialPageRoute(
+                            builder: (context) => LoginScreen(title: "Remote HMS")
+                        ));
+                      },
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: AppColors.blackColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: [
+                            TextSpan(text: "Already have an Account?  "),
+                            TextSpan(
+                                text: "Login",
+                                style: TextStyle(
+                                  color: AppColors.secondaryColor1,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ))
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

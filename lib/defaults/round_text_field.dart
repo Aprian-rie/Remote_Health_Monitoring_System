@@ -20,7 +20,7 @@ class RoundTextField extends StatelessWidget {
       required this.hintText,
       required this.icon,
       required this.textInputType,
-      required this.isObsecureText,
+      this.isObsecureText = false,
       this.rightIcon});
 
   @override

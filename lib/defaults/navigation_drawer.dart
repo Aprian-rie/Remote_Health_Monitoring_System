@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:remote_health/profile_page.dart';
 import 'package:remote_health/profile_tab.dart';
+import 'package:remote_health/reminder_page.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -103,7 +104,7 @@ class DrawerMenu extends StatelessWidget {
             Navigator.pop(context);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
+              MaterialPageRoute(builder: (context) => ReminderPage()),
             );
             // Navigate to Reminders page or tab
           },

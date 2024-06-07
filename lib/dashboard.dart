@@ -25,6 +25,8 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
   late AnimationController progressController;
   late Animation<double> tempAnimation;
   late Animation<double> bpmAnimation;
+  late Animation<double> o2Animation;
+  late Animation<double> bloodpressureAnimation;
 
   @override
   void initState() {
@@ -43,11 +45,21 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
       setState(() {});
     });
 
+    o2Animation = Tween<double>(begin: 0, end: 0).animate(progressController)..addListener(() {
+      setState(() {});
+    });
+
+    bloodpressureAnimation = Tween<double>(begin: 0, end: 0).animate(progressController)..addListener(() {
+      setState(() {});
+    });
+
     databaseReference.child('ESP').onValue.listen((DatabaseEvent event) {
       DataSnapshot snapshot = event.snapshot;
       if (snapshot.value != null) {
         double temp = _parseDouble(snapshot.child('Temperature').value);
         double bpm = _parseDouble(snapshot.child('Heart_rate').value);
+        double bloodpressure = _parseDouble(snapshot.child('bp_d').value);
+        double o2conc = _parseDouble(snapshot.child('Temp_F').value);
 
         setState(() {
           tempAnimation = Tween<double>(begin: tempAnimation.value, end: temp).animate(progressController)..addListener(() {
@@ -55,6 +67,14 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
           });
 
           bpmAnimation = Tween<double>(begin: bpmAnimation.value, end: bpm).animate(progressController)..addListener(() {
+            setState(() {});
+          });
+
+          bloodpressureAnimation = Tween<double>(begin: bloodpressureAnimation.value, end: bloodpressure).animate(progressController)..addListener(() {
+            setState(() {});
+          });
+
+          o2Animation = Tween<double>(begin: o2Animation.value, end: o2conc).animate(progressController)..addListener(() {
             setState(() {});
           });
 
@@ -127,6 +147,8 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
               isLoading: isLoading,
               tempAnimation: tempAnimation,
               bpmAnimation: bpmAnimation,
+              o2Animation: o2Animation,
+              bloodpressureAnimation: bloodpressureAnimation,
             ),
             HealthTipsTab(),
             ProfileTab(),

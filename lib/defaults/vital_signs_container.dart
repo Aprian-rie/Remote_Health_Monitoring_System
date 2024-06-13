@@ -41,7 +41,7 @@ class InfoContainer extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
               color: textColor,
             ),

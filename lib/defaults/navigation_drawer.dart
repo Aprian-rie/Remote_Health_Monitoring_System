@@ -1,39 +1,110 @@
-// drawer_menu.dart
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:remote_health/profile_page.dart';
-import 'package:remote_health/profile_tab.dart';
 import 'package:remote_health/reminder_page.dart';
+import 'package:remote_health/services/media_service.dart';
+import 'package:remote_health/utils/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main.dart';
+import '../services/storage_service.dart';
 
-class DrawerMenu extends StatelessWidget {
+class DrawerMenu extends StatefulWidget {
+  final BuildContext parentContext;
+
+  const DrawerMenu({super.key, required this.parentContext});
+
+  @override
+  State<DrawerMenu> createState() => _DrawerMenuState(parentContext: parentContext);
+}
+
+class _DrawerMenuState extends State<DrawerMenu> {
+  final GetIt _getIt = GetIt.instance;
+  late MediaService _mediaService;
   final BuildContext parentContext;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  late StorageService _storageService;
 
-  DrawerMenu({required this.parentContext});
+  _DrawerMenuState({required this.parentContext});
+
+  @override
+  void initState() {
+    super.initState();
+    _mediaService = _getIt.get<MediaService>();
+    _storageService = _getIt.get<StorageService>();
+  }
+
+  Future<DocumentSnapshot> _getUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    } else {
+      throw Exception("User not logged in");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: FutureBuilder<GoogleSignInAccount?>(
-        future: googleSignIn.signInSilently(),
+      child: FutureBuilder<User?>(
+        future: _getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError || !snapshot.hasData) {
-            return _buildDrawerContent(context, 'User', null);
+            return _buildDrawerContent(context, 'User', null, '');
           } else {
-            GoogleSignInAccount user = snapshot.data!;
-            return _buildDrawerContent(context, user.displayName, user.photoUrl);
+            User user = snapshot.data!;
+            bool isGoogleSignIn = user.providerData.any((userInfo) => userInfo.providerId == 'google.com');
+            if (isGoogleSignIn) {
+              return FutureBuilder<GoogleSignInAccount?>(
+                future: googleSignIn.signInSilently(),
+                builder: (context, googleSnapshot) {
+                  if (googleSnapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (googleSnapshot.hasError || !googleSnapshot.hasData) {
+                    return _buildDrawerContent(context, 'User', null, user.uid);
+                  } else {
+                    GoogleSignInAccount googleUser = googleSnapshot.data!;
+                    return _buildDrawerContent(context, googleUser.displayName, googleUser.photoUrl, user.uid);
+                  }
+                },
+              );
+            } else {
+              return FutureBuilder<DocumentSnapshot>(
+                future: _getUserData(),
+                builder: (context, userSnapshot) {
+                  if (userSnapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (userSnapshot.hasError || !userSnapshot.hasData) {
+                    return _buildDrawerContent(context, 'User', null, user.uid);
+                  } else {
+                    var userData = userSnapshot.data!.data() as Map<String, dynamic>;
+                    String name = "${userData['firstName']} ${userData['lastName']}";
+                    return _buildDrawerContent(context, name, userData['photoUrl'], user.uid);
+                  }
+                },
+              );
+            }
           }
         },
       ),
     );
   }
 
-  Widget _buildDrawerContent(BuildContext context, String? name, String? photoUrl) {
+  Future<User?> _getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user;
+    } else {
+      throw Exception("User not logged in");
+    }
+  }
+
+  Widget _buildDrawerContent(BuildContext context, String? name, String? photoUrl, String uid) {
     return ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
@@ -48,16 +119,28 @@ class DrawerMenu extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (photoUrl != null)
-                CircleAvatar(
-                  backgroundImage: NetworkImage(photoUrl),
-                  radius: 40,
-                )
-              else
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
+              GestureDetector(
+                onTap: () async {
+                  File? file = await _mediaService.getImageFromGallery();
+                  if (file != null) {
+                    String? pfpURL = await _storageService.uploadUserPfp(file: file, uid: uid);
+                    if (pfpURL != null) {
+                      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+                        'photoUrl': pfpURL,
+                      });
+                      setState(() {
+                        // Force rebuild to show the updated image
+                      });
+                    }
+                  }
+                },
+                child: CircleAvatar(
+                  backgroundImage: photoUrl != null && photoUrl.isNotEmpty
+                      ? NetworkImage(photoUrl)
+                      : NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
                   radius: 40,
                 ),
+              ),
               SizedBox(height: 10),
               Text(
                 name ?? 'User',

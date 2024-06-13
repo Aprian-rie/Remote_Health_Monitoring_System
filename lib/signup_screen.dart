@@ -7,8 +7,12 @@ import 'package:remote_health/defaults/round_gradient_button.dart';
 import 'package:remote_health/defaults/round_text_field.dart';
 import 'package:remote_health/home_page.dart';
 import 'package:remote_health/login_screen.dart';
+import 'package:remote_health/models/user_profile.dart';
+import 'package:remote_health/services/database_service.dart';
 import 'package:remote_health/utils/app_colors.dart';
+import 'package:remote_health/utils/constants.dart';
 import 'dashboard.dart';
+import 'package:get_it/get_it.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,6 +22,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final GetIt _getIt = GetIt.instance;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   CollectionReference _users = FirebaseFirestore.instance.collection("users");
 
@@ -28,6 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isObscure = true;
   bool _isCheck = false;
   final _formKey = GlobalKey<FormState>();
+  late DatabaseService _databaseService;
 
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: <String>['email']);
   GoogleSignInAccount? _currentUser;
@@ -35,6 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
+    _databaseService = _getIt.get<DatabaseService>();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
         _currentUser = account!;
@@ -250,6 +257,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 password: _passController.text,
                               );
                               String uid = userCredential.user!.uid;
+                              if (uid != null) {
+                                await _databaseService.createUserProfile(
+                                    userProfile: UserProfile(
+                                        uid: uid,
+                                        firstName: _firstNameController.text,
+                                        lastName: _lastNameController.text,));
+                              }
 
                               await _users.doc(uid).set({
                                 'email': _emailController.text,
@@ -257,17 +271,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 'lastName': _lastNameController.text,
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Account Created"))
-                              );
+                                  SnackBar(content: Text("Account Created")));
                               Navigator.push(
-                                  context, MaterialPageRoute(
-                                  builder: (context) => LoginScreen(title: "Remote HMS")
-                              ));
-
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          LoginScreen(title: "Remote HMS")));
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(e.toString()))
-                              );
+                                  SnackBar(content: Text(e.toString())));
                             }
                           }
                         }
@@ -357,9 +369,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context, MaterialPageRoute(
-                            builder: (context) => LoginScreen(title: "Remote HMS")
-                        ));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LoginScreen(title: "Remote HMS")));
                       },
                       child: RichText(
                         textAlign: TextAlign.center,

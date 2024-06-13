@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:remote_health/defaults/round_gradient_button.dart';
 import 'package:remote_health/defaults/round_text_field.dart';
-import 'package:remote_health/home_page.dart';
 import 'package:remote_health/signup_screen.dart';
 import 'package:remote_health/utils/app_colors.dart';
 import 'dashboard.dart';
@@ -37,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
             content: Text("Login Successfully"))
       );
 
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(
           builder: (context) => Dashboard()
       ));

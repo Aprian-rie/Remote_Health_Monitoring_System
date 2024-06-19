@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:remote_health/models/channel_model.dart';
 import 'package:remote_health/screens/video_screen.dart';
 import '../models/video_model.dart';
-import '../services/api_service.dart';
+import '../services/yt_api_service.dart';
+import 'package:remote_health/utils/app_colors.dart';
 
 class VideoScreenHome extends StatefulWidget {
   const VideoScreenHome({Key? key}) : super(key: key);
@@ -88,36 +89,43 @@ class _VideoScreenHomeState extends State<VideoScreenHome> {
         ),
       ),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-        padding: EdgeInsets.all(10.0),
-        height: 140.0,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              offset: Offset(0, 1),
-              blurRadius: 6.0,
+        margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        child: Material(
+          elevation: 5.0,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
-        ),
-        child: Row(
-          children: <Widget>[
-            Image(
-              width: 150.0,
-              image: NetworkImage(video.thumbnailUrl),
-            ),
-            SizedBox(width: 10.0),
-            Expanded(
-              child: Text(
-                video.title,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.0,
+            child: Row(
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    video.thumbnailUrl,
+                    width: 150.0,
+                    height: 90.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: Text(
+                    video.title,
+                    style: TextStyle(
+                      color: AppColors.primaryColor1,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -135,7 +143,7 @@ class _VideoScreenHomeState extends State<VideoScreenHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('YouTube Channel'),
+        title: Text('YouTube Channels'),
       ),
       body: FutureBuilder<Channel>(
         future: _channelFuture,

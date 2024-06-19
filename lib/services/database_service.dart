@@ -67,9 +67,36 @@ class DatabaseService {
     );
   }
 
-  Stream<DocumentSnapshot<Chat>> getChatData(String uid1, String uid2){
+  Stream<DocumentSnapshot<Chat>> getChatData(String uid1, String uid2) {
     String chatID = generateChatID(uid1: uid1, uid2: uid2);
     return _chatsCollection?.doc(chatID).snapshots()
-    as Stream<DocumentSnapshot<Chat>>;
+        as Stream<DocumentSnapshot<Chat>>;
+  }
+
+  Future addContactDetails(
+      Map<String, dynamic> contactInfoMap, String id) async {
+    return await FirebaseFirestore.instance
+        .collection("ContactPersons")
+        .doc(id)
+        .set(contactInfoMap);
+  }
+
+  Future<Stream<QuerySnapshot>> getContactDetails() async {
+    return await FirebaseFirestore.instance
+        .collection("ContactPersons")
+        .snapshots();
+  }
+
+  Future updateContactDetail(String id, Map<String, dynamic> updateInfo) async {
+    return await FirebaseFirestore.instance
+        .collection("ContactPersons")
+        .doc(id)
+        .update(updateInfo);
+  }
+
+  Future deleteContactDetail(String id, ) async {
+    return await FirebaseFirestore.instance
+        .collection("ContactPersons")
+        .doc(id).delete();
   }
 }

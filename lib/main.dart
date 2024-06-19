@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:remote_health/utils/utils.dart';
 import 'models/provider.dart';
-import 'login_screen.dart'; // Import LoginScreen class from separate file
+import 'screens/login_screen.dart'; // Import LoginScreen class from separate file
 import 'dashboard.dart';
 
 void main() async{

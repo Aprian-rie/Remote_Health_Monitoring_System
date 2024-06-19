@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:remote_health/utils/app_colors.dart';
+import '../defaults/round_gradient_button.dart';
 import '../models/channel_model.dart';
 import '../models/video_model.dart';
-import '../services/api_service.dart';
+import '../services/yt_api_service.dart';
 import 'video_screen.dart';
 
 class VideoListScreen extends StatefulWidget {
@@ -20,7 +22,35 @@ class _VideoListScreenState extends State<VideoListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.channel.title),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.channel.profilePictureUrl),
+            ),
+            SizedBox(width: 10.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.channel.title,
+                  style: TextStyle(
+                    color: AppColors.primaryColor1,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '${widget.channel.subscriberCount} subscribers',
+                  style: TextStyle(
+                    color: AppColors.primaryColor2,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        backgroundColor: Colors.white,
       ),
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollDetails) {
@@ -39,17 +69,57 @@ class _VideoListScreenState extends State<VideoListScreen> {
                   : SizedBox.shrink();
             }
             Video video = widget.channel.videos[index];
-            return ListTile(
-              leading: Image.network(video.thumbnailUrl),
-              title: Text(video.title),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VideoScreen(id: video.id),
+            return Container(
+              margin: EdgeInsets.only(bottom: 20.0),
+              child: Material(
+                elevation: 5.0,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Image.network(
+                            video.thumbnailUrl,
+                            width: 100,
+                            height: 70,
+                            fit: BoxFit.cover,
+                          ),
+                          SizedBox(width: 10.0),
+                          Expanded(
+                            child: Text(
+                              video.title,
+                              style: TextStyle(
+                                color: AppColors.primaryColor1,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
+                      RoundGradientButton(
+                        title: "Watch",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoScreen(id: video.id),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
           },
         ),

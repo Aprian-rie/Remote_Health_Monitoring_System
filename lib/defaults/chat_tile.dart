@@ -38,11 +38,6 @@ class ChatTile extends StatelessWidget {
             leading: CircleAvatar(child: CircularProgressIndicator()),
             title: Text('Loading...'),
           );
-        // } else if (snapshot.hasError || !snapshot.hasData) {
-        //   return ListTile(
-        //     leading: CircleAvatar(child: Icon(Icons.error)),
-        //     title: Text('User not found'),
-        //   );
         } else {
           String? photoUrl = snapshot.data;
           return ListTile(
@@ -51,11 +46,15 @@ class ChatTile extends StatelessWidget {
             },
             dense: false,
             leading: CircleAvatar(
-              backgroundImage: photoUrl != null
-                  ? NetworkImage(photoUrl)
-                  : NetworkImage(PLACEHOLDER_PFP),
-            ),
-            title: Text('${userProfile.firstName} ${userProfile.lastName}'), // Replace with actual user name if available
+              radius: 30.0,
+            backgroundImage: photoUrl != null
+                ? NetworkImage(photoUrl)
+                : NetworkImage(PLACEHOLDER_PFP),
+          ),
+            title: Text('${userProfile.firstName} ${userProfile.lastName}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ) ,), // Replace with actual user name if available
           );
         }
       },

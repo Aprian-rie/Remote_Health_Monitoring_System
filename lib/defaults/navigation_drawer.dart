@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:remote_health/profile_page.dart';
-import 'package:remote_health/reminder_page.dart';
+import 'package:remote_health/screens/reminder_page.dart';
 import 'package:remote_health/services/media_service.dart';
 import 'package:remote_health/utils/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -10,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main.dart';
+import '../screens/profile_page.dart';
 import '../services/storage_service.dart';
 
 class DrawerMenu extends StatefulWidget {

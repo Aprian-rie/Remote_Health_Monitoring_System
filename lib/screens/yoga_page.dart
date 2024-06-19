@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:remote_health/utils/constants.dart';
 
 import '../models/article_model.dart';
+import '../utils/app_colors.dart';
 
 class YogaPage extends StatefulWidget {
   const YogaPage({Key? key}) : super(key: key);
@@ -48,7 +49,6 @@ class _ArticlesState extends State<YogaPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     add();
     super.initState();
   }
@@ -57,9 +57,24 @@ class _ArticlesState extends State<YogaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Articles'),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurpleAccent.withOpacity(0.8),
+        title: Row(
+          children: [
+            Text(
+              "Yoga ",
+              style: TextStyle(
+                  color: AppColors.primaryColor1,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Practices",
+              style: TextStyle(
+                  color: AppColors.primaryColor2,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
       body: Container(
         padding: EdgeInsets.all(15.00),

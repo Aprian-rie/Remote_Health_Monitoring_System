@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remote_health/utils/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Article extends StatelessWidget {
@@ -25,14 +26,14 @@ class Article extends StatelessWidget {
                 Icon(
                   Icons.article,
                   size: 50,
-                  color: Colors.black,
+                  color: AppColors.primaryColor2,
                 ),
                 SizedBox(width: 20),
                 Expanded(
                   child: Text(
                     title,
                     style: TextStyle(
-                        color: Color(0xFF02315E),
+                        color: AppColors.secondaryColor1,
                         fontWeight: FontWeight.w900,
                         fontSize: 15,
                         fontStyle: FontStyle.italic),
@@ -45,28 +46,31 @@ class Article extends StatelessWidget {
               child: imageUrl == null
                   ? SizedBox()
                   : Image(
-                image: NetworkImage(imageUrl!),
-              ),
+                      image: NetworkImage(imageUrl!),
+                    ),
             ),
             SizedBox(height: height / 60),
             author == null
                 ? SizedBox()
                 : Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(child: Text('- by ${author}')),
-              ],
-            ),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(child: Text('- by ${author}')),
+                    ],
+                  ),
             SizedBox(height: height / 30),
             Container(
                 padding: EdgeInsets.all(25.00),
                 decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: AppColors.primaryColor1,
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(color: Colors.black)),
                 child: Text(
                   description,
-                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
                 )),
             TextButton(
               onPressed: () {
@@ -75,7 +79,9 @@ class Article extends StatelessWidget {
               child: Text(
                 'click on this link to know more',
                 style: TextStyle(
-                    color: Colors.blue, decoration: TextDecoration.underline),
+                    color: AppColors.primaryColor2,
+                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(

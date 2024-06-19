@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:remote_health/utils/constants.dart';
-
 import '../models/article_model.dart';
+import '../utils/app_colors.dart';
 
 class HealthArticles extends StatefulWidget {
   const HealthArticles({Key? key}) : super(key: key);
@@ -48,7 +48,6 @@ class _ArticlesState extends State<HealthArticles> {
 
   @override
   void initState() {
-    // TODO: implement initState
     add();
     super.initState();
   }
@@ -57,9 +56,24 @@ class _ArticlesState extends State<HealthArticles> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Articles'),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurpleAccent.withOpacity(0.8),
+        title: Row(
+          children: [
+            Text(
+              "Health ",
+              style: TextStyle(
+                  color: AppColors.primaryColor1,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Articles",
+              style: TextStyle(
+                  color: AppColors.primaryColor2,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
       body: Container(
         padding: EdgeInsets.all(15.00),

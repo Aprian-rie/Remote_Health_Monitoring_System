@@ -1,13 +1,12 @@
-// dashboard.dart
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:remote_health/screens/chat_page.dart';
+import 'package:remote_health/screens/home_page.dart';
+import 'package:remote_health/screens/profile_page.dart';
 import 'defaults/navigation_drawer.dart';
-import 'home_page.dart';
-import 'health_tips_page.dart';
-import 'profile_tab.dart';
-import 'chat_page.dart';
+import 'screens/health_tips_page.dart';
+import 'screens/profile_tab.dart';
 
 
 class Dashboard extends StatefulWidget {
@@ -102,7 +101,7 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Dashboard',
+            'Remote Health',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -127,13 +126,13 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
               ),
             ),
           ),
-          bottom: TabBar(
+          bottom: const TabBar(
             labelColor: Colors.white,
             indicatorColor: Colors.white,
             indicatorWeight: 5,
             tabs: [
               Tab(icon: Icon(Icons.home), text: 'Home'),
-              Tab(icon: Icon(Icons.tips_and_updates), text: 'Health Tips'),
+              Tab(icon: Icon(Icons.tips_and_updates), text: 'H Tips'),
               Tab(icon: Icon(Icons.face_retouching_natural_rounded), text: 'Profile'),
               Tab(icon: Icon(Icons.mail), text: 'Messages'),
             ],
@@ -151,7 +150,7 @@ class _DashboardState extends State<Dashboard> with SingleTickerProviderStateMix
               bloodpressureAnimation: bloodpressureAnimation,
             ),
             HealthTipsTab(),
-            ProfileTab(),
+            ProfilePage(),
             ChatPage(),
           ],
         ),

@@ -19,7 +19,7 @@ class InfoContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
+      width: 160,
       height: 150,
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(

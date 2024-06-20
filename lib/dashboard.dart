@@ -6,7 +6,6 @@ import 'package:remote_health/screens/home_page.dart';
 import 'package:remote_health/screens/profile_page.dart';
 import 'defaults/navigation_drawer.dart';
 import 'screens/health_tips_page.dart';
-import 'screens/profile_tab.dart';
 
 
 class Dashboard extends StatefulWidget {

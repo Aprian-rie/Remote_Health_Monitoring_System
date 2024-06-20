@@ -4,6 +4,7 @@ import 'package:remote_health/screens/exercise_page.dart';
 import 'package:remote_health/screens/health_articles.dart';
 import 'package:remote_health/screens/mental_health_articles_page.dart';
 import 'package:remote_health/screens/search_screen_diet.dart';
+import 'package:remote_health/screens/statistics_page.dart';
 import 'package:remote_health/screens/video_Screen_home.dart';
 import 'package:remote_health/screens/yoga_page.dart';
 
@@ -36,7 +37,7 @@ class HealthTipsTab extends StatelessWidget {
                 itemDashboard(context, 'Videos', CupertinoIcons.play_rectangle, Colors.deepOrange,ChannelListScreen()),
                 itemDashboard(context, 'Articles', CupertinoIcons.news, Colors.green, const HealthArticles()),
                 itemDashboard(context, 'Diet Plans', CupertinoIcons.heart_circle_fill, Colors.purple,SearchScreenDiet()),
-                itemDashboard(context, 'Statistics (Analytics)', CupertinoIcons.graph_circle, Colors.brown,MentalHealthArticlesPage()),
+                itemDashboard(context, 'Statistics (Analytics)', CupertinoIcons.graph_circle, Colors.brown,StatisticsPage()),
                 itemDashboard(context, 'Mental Health', CupertinoIcons.graph_square_fill, Colors.indigo,MentalHealthArticlesPage()),
                 itemDashboard(context, 'Exercise Routines', CupertinoIcons.add_circled, Colors.teal,ExercisePage()),
                 itemDashboard(context, 'Yoga Practices', CupertinoIcons.question_circle, Colors.blue,const YogaPage()),

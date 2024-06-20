@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../defaults/vital_signs_container.dart';
 
 class HomeTab extends StatelessWidget {
